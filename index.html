@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Julia Filippo (@juliafilippo_) | Linkme</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        (function () {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            var isInstagram = ua.indexOf('Instagram') > -1;
+            var isIOS = /iPhone|iPad|iPod/.test(ua);
+            var isAndroid = /Android/.test(ua);
+
+            if (isInstagram) {
+                if (isIOS) {
+                    var target = window.location.href.replace(/^https?:\/\//, "");
+                    window.location.href = "x-safari-https://" + target;
+                } else if (isAndroid) {
+                    // Start in Chrome by default on Android
+                    var target = window.location.href;
+                    window.location.href = "intent://" + target.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+                }
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Profile Header -->
+        <header class="profile-header">
+            <div class="avatar-container">
+                <img src="" alt="Profile Picture" id="avatar" class="avatar">
+            </div>
+            <div class="profile-info">
+                <h1 id="displayName">Loading...</h1>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Twitter_Verified_Badge.svg" alt="Verified"
+                    class="verified-badge" id="verifiedBadge" style="display: none;">
+            </div>
+            <p id="bio" class="bio"></p>
+        </header>
+
+        <!-- Links Container -->
+        <main class="links-container" id="linksContainer">
+            <!-- Links will be injected here by JS -->
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by <a href="#">Linkme Clone</a></p>
+        </footer>
+    </div>
+
+    <!-- Mature Content Overlay (Hidden by default) -->
+    <div id="overlay" class="overlay hidden">
+        <div class="overlay-content">
+            <div class="lock-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h2>Mature Content Disclaimer</h2>
+            <p>This link may contain graphic or adult content.</p>
+            <button id="continueBtn" class="continue-btn">Continue (18+)</button>
+            <button id="closeOverlayBtn" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+{
+  "profile": {
+    "username": "juliafilippo_",
+    "displayName": "Julia Filippo",
+    "avatarUrl": "https://placehold.co/400x400/1F1A35/FFFFFF?text=JF",
+    "verified": true,
+    "bio": "Check out my exclusive content below! 👇"
+  },
+  "links": [
+    {
+      "id": "1",
+      "title": "OnlyFans",
+      "url": "",
+      "isAdult": true,
+      "realUrl": "https://onlyfans.com/juliafilippo"
+    },
+    {
+      "id": "2",
+      "title": "Instagram",
+      "url": "https://instagram.com/juliafilippo",
+      "isAdult": false
+    }
+  ]
+}
