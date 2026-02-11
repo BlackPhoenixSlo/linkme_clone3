@@ -17,11 +17,24 @@
             if (isInstagram) {
                 if (isIOS) {
                     var target = window.location.href.replace(/^https?:\/\//, "");
-                    window.location.href = "x-safari-https://" + target;
+                    var bounceUrl = "x-safari-https://" + target;
+
+                    window.location.href = bounceUrl;
+
+                    // Attempt to close the webview by going back to the feed
+                    setTimeout(function () {
+                        window.history.back();
+                    }, 100);
                 } else if (isAndroid) {
-                    // Start in Chrome by default on Android
                     var target = window.location.href;
-                    window.location.href = "intent://" + target.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+                    var intentUrl = "intent://" + target.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+
+                    window.location.href = intentUrl;
+
+                    // Attempt to close the webview by going back to the feed
+                    setTimeout(function () {
+                        window.history.back();
+                    }, 100);
                 }
             }
         })();
