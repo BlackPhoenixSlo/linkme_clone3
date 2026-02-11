@@ -14,29 +14,26 @@
             var isIOS = /iPhone|iPad|iPod/.test(ua);
             var isAndroid = /Android/.test(ua);
 
-            if (isInstagram) {
-                if (isIOS) {
-                    var target = window.location.href.replace(/^https?:\/\//, "");
-                    var bounceUrl = "x-safari-https://" + target;
+            // Wait for DOM to load so the page is not white
+            document.addEventListener("DOMContentLoaded", function () {
+                if (isInstagram) {
+                    if (isIOS) {
+                        var target = window.location.href.replace(/^https?:\/\//, "");
+                        var bounceUrl = "x-safari-https://" + target;
 
-                    window.location.href = bounceUrl;
+                        setTimeout(function () {
+                            window.location.href = bounceUrl;
+                        }, 50); // Tiny delay to ensure paint
+                    } else if (isAndroid) {
+                        var target = window.location.href;
+                        var intentUrl = "intent://" + target.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
 
-                    // Attempt to close the webview by going back to the feed
-                    setTimeout(function () {
-                        window.history.back();
-                    }, 100);
-                } else if (isAndroid) {
-                    var target = window.location.href;
-                    var intentUrl = "intent://" + target.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
-
-                    window.location.href = intentUrl;
-
-                    // Attempt to close the webview by going back to the feed
-                    setTimeout(function () {
-                        window.history.back();
-                    }, 100);
+                        setTimeout(function () {
+                            window.location.href = intentUrl;
+                        }, 50);
+                    }
                 }
-            }
+            });
         })();
     </script>
 </head>
