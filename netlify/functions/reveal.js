@@ -2,11 +2,9 @@ exports.handler = async function (event, context) {
     // 1. Get the Link ID from the query parameters
     const { id } = event.queryStringParameters;
 
-    // 2. Define the "Database" of secrets (Mapping ID -> Real URL)
-    // In a real app, this would come from a database.
-    const secrets = {
-        "1": "https://onlyfans.com/juliafilippo",
-    };
+    // 2. Load secrets from external JSON file
+    // This allows n8n updates via Git without modifying code logic.
+    const secrets = require('./secrets.json');
 
     // 3. Look up the URL
     const realUrl = secrets[id];
