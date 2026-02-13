@@ -256,7 +256,8 @@ h1 {
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* User request: Move text to the bottom */
+    justify-content: flex-end;
     border: 1px solid rgba(255, 255, 255, 0.2);
 
     /* Ensure relative positioning for the pseudo-element overlay */
