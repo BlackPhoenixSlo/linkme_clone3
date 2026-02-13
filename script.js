@@ -150,6 +150,11 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle.className = 'link-subtitle';
             subtitle.textContent = link.subtitle || (link.isAdult ? 'Exclusive Content' : 'Social Media');
 
+            if (link.backgroundImage) {
+                card.style.backgroundImage = `url('${link.backgroundImage}')`;
+                card.classList.add('has-bg-image');
+            }
+
             content.appendChild(title);
             content.appendChild(subtitle);
             card.appendChild(content);

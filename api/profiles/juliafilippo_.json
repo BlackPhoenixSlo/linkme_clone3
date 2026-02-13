@@ -12,6 +12,7 @@
       "tracking": true,
       "title": "OnlyFans",
       "url": "",
+      "backgroundImage": "/images/face.webp",
       "isAdult": true,
       "geo": {
         "default": "10",
