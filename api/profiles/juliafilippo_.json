@@ -13,7 +13,7 @@
       "title": "OnlyFans",
       "url": "",
       "backgroundImage": "/images/face.webp",
-      "icon": "/images/onlyicon.webp",
+      "icon": "/images/linkicon.webp",
       "isAdult": true,
       "geo": {
         "default": "10",
@@ -188,6 +188,7 @@
       "tracking": true,
       "title": "OnlyFans",
       "url": "https://instagram.com/juliafilippo_",
+      "icon": "/images/onlyicon.webp",
       "isAdult": false
     },
     {
@@ -195,6 +196,7 @@
       "title": "Instagram",
       "tracking": false,
       "backgroundImage": "/images/face.png",
+      "icon": "/images/onlyicon2.webp",
       "url": "https://instagram.com/juliafilippo_",
       "isAdult": false
     }
