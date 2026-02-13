@@ -193,6 +193,7 @@
       "id": "2",
       "title": "Instagram",
       "tracking": false,
+      "backgroundImage": "/images/face.jpg",
       "url": "https://instagram.com/juliafilippo_",
       "isAdult": false
     }
