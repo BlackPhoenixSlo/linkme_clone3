@@ -1,6 +1,9 @@
 [build]
   publish = "."
 
+[functions]
+  included_files = ["api/profiles/*.json"]
+
 [[headers]]
   for = "/*"
   [headers.values]

@@ -16,10 +16,25 @@ function getGeoTrackingId(username, linkId, headers) {
         // We will try a few paths to be robust.
 
         // This path works if the file is copied to the function directory or available via relative path
-        const profilePath = path.resolve(__dirname, `../../api/profiles/${username}.json`);
+        // Try multiple paths to be robust against Netlify's bundling
+        const possiblePaths = [
+            path.resolve(__dirname, `../../api/profiles/${username}.json`), // Local dev / typical structure
+            path.resolve(process.cwd(), `api/profiles/${username}.json`),   // Lambda root
+            path.resolve(__dirname, `api/profiles/${username}.json`)        // If flattened
+        ];
 
-        if (!fs.existsSync(profilePath)) {
-            console.error(`Profile not found: ${profilePath}`);
+        let profilePath = null;
+        for (const p of possiblePaths) {
+            if (fs.existsSync(p)) {
+                profilePath = p;
+                break;
+            }
+        }
+
+        console.log(`Resolved profile path: ${profilePath}`);
+
+        if (!profilePath) {
+            console.error(`Profile not found in any checked paths: ${possiblePaths.join(', ')}`);
             return null;
         }
 
