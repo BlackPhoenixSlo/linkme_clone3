@@ -151,7 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle.textContent = link.subtitle || (link.isAdult ? 'Exclusive Content' : 'Social Media');
 
             if (link.backgroundImage) {
-                card.style.backgroundImage = `url('${link.backgroundImage}')`;
+                const bgImg = document.createElement('img');
+                bgImg.src = link.backgroundImage;
+                bgImg.className = 'link-bg-image';
+                bgImg.alt = ''; // Decorative
+                // Insert as first child so it sits behind content
+                card.insertBefore(bgImg, card.firstChild);
                 card.classList.add('has-bg-image');
             }
 

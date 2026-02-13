@@ -3,7 +3,8 @@
     --text-color: #ffffff;
     --card-bg: #1C1C1E;
     --card-hover: #2C2C2E;
-    --accent-gradient: linear-gradient(135deg, #833AB4, #FD1D1D, #FCB045); /* Instagram-ish */
+    --accent-gradient: linear-gradient(135deg, #833AB4, #FD1D1D, #FCB045);
+    /* Instagram-ish */
     --overlay-bg: rgba(0, 0, 0, 0.6);
     --blur-amount: 12px;
 }
@@ -176,7 +177,7 @@ h1 {
     width: 80%;
     max-width: 350px;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: 1px solid #333;
     transform: scale(0.9);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -238,28 +239,69 @@ h1 {
 }
 
 .hidden {
-    display: none; /* fallback */
+    display: none;
+    /* fallback */
     opacity: 0;
     pointer-events: none;
 }
 
-/* CSS for Link Background Images */
+/* CSS for Link Background Images (Banners) */
 .link-btn.has-bg-image {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* Ensure text is readable over image */
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    padding: 0;
+    /* Remove padding so image hits edges */
+    overflow: hidden;
+    /* Clip image corners */
+    min-height: 100px;
+    /* Minimum height for banners */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    /* Darken image slightly */
-    background-color: rgba(0,0,0,0.5); 
-    background-blend-mode: overlay;
+    /* No background-image here anymore */
+    background-color: transparent;
     transition: all 0.3s ease;
 }
 
+.link-bg-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* This ensures the image drives the height aka "resize to be width full" */
+    object-fit: cover;
+}
+
+/* Overlay the text content on top of the image */
+.link-btn.has-bg-image .link-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    z-index: 2;
+    /* Ensure text is readable */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* Optional: Add a dark overlay on the image itself or via pseudo-element */
+.link-btn.has-bg-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    /* Darkens the image */
+    z-index: 1;
+    transition: background 0.3s ease;
+}
+
+.link-btn.has-bg-image:hover::after {
+    background: rgba(0, 0, 0, 0.2);
+    /* Lighten on hover */
+}
+
 .link-btn.has-bg-image:hover {
-    /* Lighten slightly on hover */
-    background-color: rgba(0,0,0,0.2);
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
