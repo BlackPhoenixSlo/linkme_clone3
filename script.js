@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Store links data to simulate API fetching
     let linksData = [];
+    let currentProfile = null;
     let currentLinkId = null;
 
     // Helper: Perform Bounce
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             renderProfile(data.profile);
+            currentProfile = data.profile;
             linksData = data.links;
             renderLinks(linksData);
 
@@ -86,9 +88,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const link = linksData.find(l => l.id === deepLinkParam);
 
                 if (link && link.tracking) {
-                    const storedTrackingId = localStorage.getItem('linkme_tracking_id');
-                    if (storedTrackingId) {
-                        fetchUrl += `&trackingId=${storedTrackingId}`;
+                    let trackingIdToUse = localStorage.getItem('linkme_tracking_id');
+
+                    if (!trackingIdToUse) {
+                        // Priority 2: Modified - Only use Profile Default
+                        if (currentProfile && currentProfile.default_tracknumber) {
+                            trackingIdToUse = currentProfile.default_tracknumber;
+                        }
+                    }
+
+                    if (trackingIdToUse) {
+                        fetchUrl += `&trackingId=${trackingIdToUse}`;
                     }
                 }
 
@@ -218,9 +228,17 @@ document.addEventListener('DOMContentLoaded', () => {
         let fetchUrl = `/.netlify/functions/reveal?id=${currentLinkId}&user=${username}`;
 
         if (link && link.tracking) {
-            const storedTrackingId = localStorage.getItem('linkme_tracking_id');
-            if (storedTrackingId) {
-                fetchUrl += `&trackingId=${storedTrackingId}`;
+            let trackingIdToUse = localStorage.getItem('linkme_tracking_id');
+
+            if (!trackingIdToUse) {
+                // Priority 2: Modified - Only use Profile Default
+                if (currentProfile && currentProfile.default_tracknumber) {
+                    trackingIdToUse = currentProfile.default_tracknumber;
+                }
+            }
+
+            if (trackingIdToUse) {
+                fetchUrl += `&trackingId=${trackingIdToUse}`;
             }
         }
 

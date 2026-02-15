@@ -4,7 +4,8 @@
     "displayName": "Julia Filippo",
     "avatarUrl": "/images/face.webp",
     "verified": true,
-    "bio": "Check out my exclusive content below! 👇"
+    "bio": "Check out my exclusive content below! 👇",
+    "default_tracknumber": "5"
   },
   "links": [
     {
