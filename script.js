@@ -118,10 +118,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     function renderProfile(profile) {
-        document.title = `${profile.displayName} (@${profile.username}) | Linkme`;
+        // User Request: Name as Title
+        document.title = profile.displayName;
+
         profileContainer.name.textContent = profile.displayName;
         profileContainer.bio.textContent = profile.bio;
         profileContainer.avatar.src = profile.avatarUrl;
+
+        // User Request: Avatar as Page Icon (Favicon)
+        let link = document.querySelector("link[rel~='icon']");
+        if (!link) {
+            link = document.createElement('link');
+            link.rel = 'icon';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+        link.href = profile.avatarUrl;
 
         if (profile.verified) {
             profileContainer.verifiedBadge.style.display = 'inline-block';
