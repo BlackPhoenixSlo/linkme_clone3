@@ -134,13 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'link-card';
 
-            // Thumbnail
-            if (link.thumbnailUrl) { // Using placehold.co images from JSON if available
-                const img = document.createElement('img');
-                img.src = link.thumbnailUrl || 'https://via.placeholder.com/50';
-                img.className = 'link-thumbnail';
-                card.appendChild(img);
-            }
+
 
             const content = document.createElement('div');
             content.className = 'link-content';
