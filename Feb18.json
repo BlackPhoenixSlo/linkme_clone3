@@ -1,0 +1,2352 @@
+{
+  "name": "n8n ofl.ink copy",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Fill this form to get your website",
+        "formDescription": "https://linkmeclone3.netlify.app/YourID/TrackingLink\nor\nhttps://linkmeclone3.netlify.app/YourID/geo\n\nhttps://ofl.ink/YourID/geo",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "ID just lowercase",
+              "fieldName": "ID",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "text of Json file (if you have it) in file",
+              "fieldType": "file",
+              "fieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -4448,
+        880
+      ],
+      "id": "142e2943-cb7e-4cb5-a703-4718bbc958a7",
+      "name": "On form submission",
+      "webhookId": "c782d2a0-9090-4ab2-a613-c92fe36a4027"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=api/profiles/{{ $('On form submission').item.json.ID }}.json",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -4000,
+        880
+      ],
+      "id": "27429605-6385-42ff-8203-e7347966e6b8",
+      "name": "Get a file",
+      "webhookId": "51d2d704-b77e-4f88-a429-d46c167bba17",
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -3776,
+        880
+      ],
+      "id": "b2e302c1-e9ea-43bf-b915-afd87e7a19ac",
+      "name": "Extract from GitFile",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -4224,
+        880
+      ],
+      "id": "9d64023e-80a9-40ca-bc0f-0dc85ca8575a",
+      "name": "Extract from Upload File",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "username",
+              "defaultValue": "={{ $json.username || $('On form submission').item.json.ID}}",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "displayName",
+              "defaultValue": "={{ $json.displayName }}",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "verified",
+              "fieldType": "checkbox",
+              "defaultValue": "={{ $json.verified }}",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "true"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "bio",
+              "defaultValue": "={{ $json.bil || \"Check out my exclusive content below! 👇\" }}"
+            },
+            {
+              "fieldLabel": "Do you want to upload new avatar image?",
+              "fieldType": "checkbox",
+              "defaultValue": "={{ !$json.avatarURL ? \"Yes\" : \"No\" }}",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "=Yes"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "How many new links do you want to add?",
+              "fieldType": "number",
+              "fieldName": "newlinkstoadd",
+              "defaultValue": "0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        -3344,
+        880
+      ],
+      "id": "c78cfedb-604c-4196-9ea5-d63dcfa2a93e",
+      "name": "Form",
+      "webhookId": "bab63a0f-7463-479c-bd88-98eafda4fef8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a12e52f-b934-4f1f-b5d3-12376c834236",
+              "name": "username",
+              "value": "={{ \n  $('Extract from Upload File').item.json.profile?.username \n  || ($('Extract from GitFile').pairedItem().json?.data?.profile?.username)\n  || $('On form submission').item.json.ID \n  || \"user\" \n}}",
+              "type": "string"
+            },
+            {
+              "id": "a0194af5-8099-4d33-a756-4cda9c3c21af",
+              "name": "displayName",
+              "value": "={{ $('Extract from Upload File').item.json.profile?.displayName ||($('Extract from GitFile').pairedItem().json?.data?.profile?.displayName)|| null }}",
+              "type": "string"
+            },
+            {
+              "id": "6821ec59-414c-4b96-af60-4a0c428feaa1",
+              "name": "avatarURL",
+              "value": "={{ $('Extract from Upload File').item.json.profile?.avatarUrl \n   || $('Extract from GitFile').item.json?.data?.profile?.avatarUrl \n   || null }}",
+              "type": "string"
+            },
+            {
+              "id": "25eacc09-257f-4814-b45f-9b2ddd66f5db",
+              "name": "verified",
+              "value": "={{ $('Extract from Upload File').item.json.profile?.verified \n   || $('Extract from GitFile').item.json?.data?.profile?.verified \n   || false }}",
+              "type": "string"
+            },
+            {
+              "id": "eba744cc-2236-4da1-8d3b-7d07ddc7b5d4",
+              "name": "bil",
+              "value": "={{ $('Extract from Upload File').item.json.profile?.bio \n   || $('Extract from GitFile').item.json?.data?.profile?.bio \n   || \"Check out my exclusive content below! 👇\" }}",
+              "type": "string"
+            },
+            {
+              "id": "6fefccd0-cdd9-4227-90f7-ff23a8bfa605",
+              "name": "links",
+              "value": "={{$('Extract from Upload File').item.json.data?.links || $('Extract from GitFile').item.json.data?.links || null }}",
+              "type": "array"
+            },
+            {
+              "id": "255dbe44-1dfe-4c5e-baf6-e54e2a6b9fe0",
+              "name": "default_tracknumber",
+              "value": "={{ $json.data.profile.default_tracknumber }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3552,
+        880
+      ],
+      "id": "5214edd3-3b67-473d-83e2-231909eb6454",
+      "name": "Json"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "upload avatar .webp",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {
+          "formTitle": "Upload .WEBP avatar photo",
+          "formDescription": "Here you can make .webp from images:\n\nhttps://www.freeconvert.com/webp-converter\nhttps://cloudconvert.com/jpg-converter\n\nYou need to upload .webp image to continute"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        -2656,
+        800
+      ],
+      "id": "0fd6c011-e4d4-4048-bf4a-8c6ef4c8122f",
+      "name": "Form1",
+      "webhookId": "6f692a5b-5ede-4f1f-b91b-576eb6f4cf6d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "96396e18-2b21-4b44-b7d7-93e75c98c421",
+              "leftValue": "={{ $binary.upload_avatar__webp.fileExtension }}",
+              "rightValue": "webp",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2432,
+        800
+      ],
+      "id": "97c2890b-ab5a-4b94-89de-89de1906e396",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1376,
+        752
+      ],
+      "id": "3feb562e-087f-4ccd-bc5b-4c1face882fa",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "links",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1616,
+        944
+      ],
+      "id": "6e27eb2c-24a4-40e0-8479-a578bf25f85f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3775eb82-9e4c-4e63-8317-9be5a9175a56",
+              "name": "links",
+              "value": "={{ \n(\n  $('Extract from Upload File').item.json.data?.links || \n  $('Json').item.json.links || \n  (($('Form').item.json.newlinkstoadd || 0) <= 0 ? [{\n    \"id\": \"0\",\n    \"tracking\": true,\n    \"title\": \"OnlyFans\",\n    \"url\": \"https://onlyfans.com/\",\n    \"icon\": \"null\",\n    \"isAdult\": true\n  }] : [])\n).concat(Array(Math.max(0, $('Form').item.json.newlinkstoadd || 0)).fill({\n  \"id\": \"0\",\n  \"tracking\": true,\n  \"title\": \"OnlyFans\",\n  \"url\": \"https://onlyfans.com/\",\n  \"icon\": \"null\",\n  \"isAdult\": true\n})) \n}}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1840,
+        960
+      ],
+      "id": "cc1952aa-de07-426e-b2e2-fb4102a34421",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "96396e18-2b21-4b44-b7d7-93e75c98c421",
+              "leftValue": "={{ $json['Do you want to upload new avatar image?'][0] }}",
+              "rightValue": "Yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -3104,
+        880
+      ],
+      "id": "7b27cc0a-3846-4a2a-89a6-d27323c2cb93",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "=displayName",
+              "defaultValue": "={{$('Loop Over Items').item.json?.links ? $('Loop Over Items').item.json.links.title : null }}"
+            },
+            {
+              "fieldLabel": "click if its OF link (enables /6 -> /c6 tracking)",
+              "fieldType": "checkbox",
+              "fieldName": "tracking",
+              "defaultValue": "={{$('Loop Over Items').item.json?.links ? \"true\" : false || false}}",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "true"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "add icon only if you add image",
+              "fieldType": "dropdown",
+              "fieldName": "icon",
+              "defaultValue": "={{$('Loop Over Items').item.json?.links ? $json.links.icon : null || null}}",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "/images/onlyicon.webp"
+                  },
+                  {
+                    "option": "/images/linkicon.webp"
+                  },
+                  {
+                    "option": "/images/twitchicon.webp"
+                  },
+                  {
+                    "option": "/images/igicon.webp"
+                  },
+                  {
+                    "option": "null"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "url",
+              "placeholder": "https://",
+              "defaultValue": "={{ $('Loop Over Items').item.json?.links ? $('Extract from Upload File2').item.json.data[$json.links.id] ? $('Extract from Upload File2').item.json.data[$json.links.id] : $json.links.url: \"https://onlyfans.com/\" || \"https://onlyfans.com/\"}}",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "isAdult",
+              "fieldType": "checkbox",
+              "defaultValue": "={{ $('Loop Over Items').item.json?.links ? \"true\" : false || false}}",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "true"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Do you want to add/change bacground image?",
+              "fieldType": "checkbox",
+              "fieldName": "wanttoaddimade",
+              "defaultValue": "={{ !$json.links.backgroundImage ? \"Yes\" : \"No\" }}",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Yes"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Delete link",
+              "fieldType": "checkbox",
+              "defaultValue": "false",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "DeleteLink"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        -1184,
+        816
+      ],
+      "id": "d17444ee-dfea-40ba-9289-8b2b0e6b917c",
+      "name": "Form2",
+      "webhookId": "b1be7d73-6b88-426b-b679-a6f016406f59"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=images/{{ $node[\"On form submission\"].json.ID }}.webp",
+        "binaryData": true,
+        "binaryPropertyName": "upload_avatar__webp",
+        "commitMessage": "uploadimage"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -2144,
+        800
+      ],
+      "id": "88f3b4ae-9f36-4ac5-9419-3e90e76c9b95",
+      "name": "Create a file1",
+      "webhookId": "8b26ec67-eddd-41ed-a35e-36308f27c53b",
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=images/{{ $node[\"On form submission\"].json.ID }}.webp",
+        "commitMessage": "uploadimage"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -2880,
+        800
+      ],
+      "id": "6268f7de-b846-4c2b-8334-84732c734229",
+      "name": "Delete a file",
+      "webhookId": "fb9a7fa4-7a6a-4782-9cd0-f9982b08adfc",
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "upload link background image .webp",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {
+          "formTitle": "Upload .WEBP link background photo",
+          "formDescription": "Here you can make .webp from images:\n\nhttps://www.freeconvert.com/webp-converter\nhttps://cloudconvert.com/jpg-converter\n\nYou need to upload .webp image to continute"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        -192,
+        800
+      ],
+      "id": "cb9366a9-46e3-4033-b018-c53e1c755465",
+      "name": "Form3",
+      "webhookId": "584a4c22-7e2f-46a9-8252-0aa4abf6ae12"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "96396e18-2b21-4b44-b7d7-93e75c98c421",
+              "leftValue": "={{ $binary.upload_link_background_image__webp\n.fileExtension }}",
+              "rightValue": "webp",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        32,
+        800
+      ],
+      "id": "8dd264f1-b73f-43a0-afd7-cdbb4be7578e",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=images/{{ $('On form submission').item.json.ID }}_alt{{ $('idset').item.json.id.toString().replace(/\\D/g, '') }}.webp",
+        "binaryData": true,
+        "binaryPropertyName": "upload_link_background_image__webp",
+        "commitMessage": "uploadimage"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        800
+      ],
+      "id": "15dc86f7-cec1-4a4d-9c90-8c6aec559e79",
+      "name": "Create a file2",
+      "webhookId": "d689ed25-b674-4b2f-aaf4-adc055a7b933",
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=images/{{ $('On form submission').item.json.ID }}_alt{{ $('idset').item.json.id.toString().replace(/\\D/g, '') }}.webp",
+        "commitMessage": "deleteimage"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        800
+      ],
+      "id": "5d1ae5f4-a1b5-47e0-b56a-9b43d8b482db",
+      "name": "Delete a file1",
+      "webhookId": "eab0611a-5570-4c2c-b0c9-fd9cbd805d08",
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "96396e18-2b21-4b44-b7d7-93e75c98c421",
+              "leftValue": "={{ $('Form2').item.json.wanttoaddimade[0] }}",
+              "rightValue": "Yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -624,
+        992
+      ],
+      "id": "020eebc6-20ce-4863-a96f-a5a0276a0941",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "96396e18-2b21-4b44-b7d7-93e75c98c421",
+              "leftValue": "={{ $('Form2').item.json.tracking[0] }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        480,
+        960
+      ],
+      "id": "e8a9683c-a4d7-47a8-8c84-bac3d08d7451",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Do you want to set Geo tracking?",
+              "fieldType": "checkbox",
+              "fieldName": "=geotracking",
+              "defaultValue": "={{ $('Loop Over Items').item.json.links?.geo && !$('Loop Over Items').item.json.links?.geo.isEmpty() ? \"yes\" : \"no\" }}",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "yes"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Add a 5 if you want you tracking code to go to /c5 by default or \"geo\" (no \") if you want it to split by GEO IP",
+              "fieldName": "default_tracknumber"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        704,
+        800
+      ],
+      "id": "2fc2339c-287f-499b-a00a-00d1eec9bd2d",
+      "name": "Form4",
+      "webhookId": "dc3f0f2c-9f1f-4a9b-9374-a462730414c5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "96396e18-2b21-4b44-b7d7-93e75c98c421",
+              "leftValue": "={{ $json.geotracking[0] }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        928,
+        800
+      ],
+      "id": "849b0d5e-ad77-4cd8-849d-c12821b33f6d",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Don't fuck up the JSON cause I didn't code in guardreals",
+              "fieldType": "textarea",
+              "fieldName": "linkids",
+              "defaultValue": "={{ $('Loop Over Items').item.json.links?.geo ? $('Loop Over Items').item.json.links.geo.toJsonString() : $json['def geo tracking id'] }}"
+            }
+          ]
+        },
+        "options": {
+          "formTitle": "Here you can settup tracking links by geo",
+          "formDescription": "You need to change numbers here after the for example \nSI - slovenia SI : \"35\" means people from slovenia will be forwarded to .../c35 \n\nPlease do not fuckup the json cause... edit just the numbers if you dont know what you are doing. \n:))"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        1376,
+        736
+      ],
+      "id": "5630109a-e7d1-44b1-b952-d9ae531f2674",
+      "name": "Form5",
+      "webhookId": "1eeb4789-8563-4e90-9918-7820e70fa0f8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6d42b06e-9ca4-411b-8341-69b376c9aa3f",
+              "name": "def geo tracking id",
+              "value": "{\"default\":\"10\",\"US\":{\"default\":\"10\",\"AL\":\"15\",\"AK\":\"15\",\"AZ\":\"15\",\"AR\":\"15\",\"CA\":\"15\",\"CO\":\"15\",\"CT\":\"15\",\"DE\":\"15\",\"FL\":\"15\",\"GA\":\"15\",\"HI\":\"15\",\"ID\":\"15\",\"IL\":\"15\",\"IN\":\"15\",\"IA\":\"15\",\"KS\":\"15\",\"KY\":\"15\",\"LA\":\"15\",\"ME\":\"15\",\"MD\":\"15\",\"MA\":\"15\",\"MI\":\"15\",\"MN\":\"15\",\"MS\":\"15\",\"MO\":\"15\",\"MT\":\"15\",\"NE\":\"15\",\"NV\":\"15\",\"NH\":\"15\",\"NJ\":\"15\",\"NM\":\"15\",\"NY\":\"15\",\"NC\":\"15\",\"ND\":\"15\",\"OH\":\"15\",\"OK\":\"15\",\"OR\":\"15\",\"PA\":\"15\",\"RI\":\"15\",\"SC\":\"15\",\"SD\":\"15\",\"TN\":\"15\",\"TX\":\"15\",\"UT\":\"15\",\"VT\":\"15\",\"VA\":\"15\",\"WA\":\"15\",\"WV\":\"15\",\"WI\":\"15\",\"WY\":\"15\"},\"DE\":\"20\",\"FR\":\"20\",\"IT\":\"20\",\"ES\":\"20\",\"PL\":\"20\",\"NL\":\"20\",\"BE\":\"20\",\"SE\":\"20\",\"AT\":\"20\",\"CH\":\"20\",\"NO\":\"20\",\"DK\":\"20\",\"FI\":\"20\",\"IE\":\"20\",\"PT\":\"20\",\"GR\":\"20\",\"CZ\":\"20\",\"HU\":\"20\",\"RO\":\"20\",\"GB\":\"30\",\"CA\":\"30\",\"AU\":\"30\",\"NZ\":\"30\",\"SI\":\"40\"}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1152,
+        736
+      ],
+      "id": "fb5ab5d8-c9f4-40be-9ac5-c83e6913fa56",
+      "name": "Set up def GEO id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cbd757f5-02ad-41cf-b85a-b429839ded77",
+              "name": "backimage",
+              "value": "={{ $('Form2').item?.json?.wanttoaddimade[0] == \"Yes\" ? '\"backgroundImage\": \"/images/' + $('Json').item.json.username + $('idset').item.json.id + '.webp\"' : null }}",
+              "type": "string"
+            },
+            {
+              "id": "12e97dfe-48a7-412a-9c4f-579efbb934dd",
+              "name": "icon",
+              "value": "={{ $('Form2').item?.json?.icon != \"null\" ? '\"icon\":\"'+ $('Form2').item.json.icon +'\"' : null }}",
+              "type": "string"
+            },
+            {
+              "id": "99db10ef-25b0-4b31-89ca-56ba8cdd8eaa",
+              "name": "geo",
+              "value": "={{ $(\"Form4\").isExecuted && $('Form4').item.json.geotracking[0] == \"yes\" ? $json.linkids: {}  || null}}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1600,
+        944
+      ],
+      "id": "997e394a-9bc3-4d78-bdf1-f041a2d8b719",
+      "name": "LoopOutput1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\n  \"id\": \"{{ $('Json').item.json.username }}{{ $('idset').item.json.id.toString().replace(/\\D/g, '') }}\",\n\n  \"tracking\": {{ $('Form2').item.json.tracking[0] == \"true\" }},\n\n\"url\":\"{{ $('Form2').item.json.url }}\",\n\n  \"title\": \"{{ $('Form2').item.json.displayName }}\",\n\n  \"isAdult\": {{ $('Form2').item.json.isAdult == \"true\" }}\n\n{{ $('Form2').item.json.icon != \"null\" ? ',\"icon\":\"'+ $('Form2').item.json.icon +'\"' : \"\" }}\n\n  {{ $('Form2').item.json.wanttoaddimade[0] == \"Yes\" || $('Loop Over Items').item.json.links.backgroundImage? ',\"backgroundImage\": \"/images/' + $('On form submission').item.json.ID +\"_alt\" +  $('idset').item.json.id.toString().replace(/\\D/g, '')  + '.webp\"' : \"\" }}\n\n {{ \n  (\n    $('Form2').item.json.tracking[0] && $node[\"Form4\"] && \n    $node[\"Form4\"].json?.geotracking?.[0] === \"yes\" && \n    $json?.geo\n  ) \n  ? ', \"geo\": ' + JSON.stringify($json.geo) \n  : \"\" \n}}\n\n{{ \n    /* FIX 2: Use safe access in BOTH the check and the result */\n    (\n      $('Form2').item.json.tracking[0] && $node[\"Form4\"]?.json?.default_tracknumber\n    ) \n    ? ', \"default_tracknumber\": ' + $node[\"Form4\"]?.json?.default_tracknumber\n    : \"\" \n  }}\n\n\n\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1824,
+        1024
+      ],
+      "id": "92c17d4f-489f-4e19-a18a-a3148d0adf35",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "96396e18-2b21-4b44-b7d7-93e75c98c421",
+              "leftValue": "={{ $('Form2').item.json['Delete link'][0] }}",
+              "rightValue": "DeleteLink",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -864,
+        880
+      ],
+      "id": "352be32d-44f4-4049-963f-f9879749d721",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "aggregate": "={{ $json.url }}",
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        -64
+      ],
+      "id": "643ab0df-dda3-4d8b-8718-2274601de6a6",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ae703e9b-aef7-4f91-8f62-3653e82f9a83",
+              "leftValue": "={{ $json['Delete link'][0] }}",
+              "rightValue": "=DeleteLink",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -1216,
+        304
+      ],
+      "id": "fb47f969-688d-46b1-bb23-d312304bb78d",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"profile\": {\n    \"username\": \"{{ $('Form').item.json.username }}\",\n    \"displayName\": \"{{ $('Form').item.json.displayName }}\",\n    \"avatarUrl\": \"/images/{{ $node[\"On form submission\"].json.ID }}.webp\",\n    \"verified\": {{ $('Form').item.json.verified[0] || false}},\n    \"bio\": \"{{ $('Form').item.json.bio }}\"\n  },\n  \"links\": {{ $('Aggregate').item.json.data || []}}\n}\n",
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        144
+      ],
+      "id": "1b5fc4ed-7c80-4156-b8d0-dc318d0916a6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=api/profiles/{{ $node[\"On form submission\"].json.ID.toLowerCase() }}.json",
+        "binaryData": true,
+        "commitMessage": "uploadjson"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        144
+      ],
+      "id": "f378ef7d-5245-4040-99dc-6815f6564268",
+      "name": "Create a file",
+      "webhookId": "65357285-033c-4464-8bba-218960f92786",
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        112,
+        144
+      ],
+      "id": "cf70efe8-c429-4d4d-864f-e40a8c1d17b9",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=api/profiles/{{ $node[\"On form submission\"].json.ID.toLowerCase() }}.json",
+        "commitMessage": "deletejson"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        16
+      ],
+      "id": "f0f576c5-f02f-42d4-bef6-393552597b3e",
+      "name": "Delete a file2",
+      "webhookId": "48d94d81-c06f-445a-86cd-290496969d42",
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -768,
+        560
+      ],
+      "id": "d6d5a27e-3a48-4954-a235-eff5a1fcc70e",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=netlify/functions/secrets.json",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -496,
+        352
+      ],
+      "id": "fdbffa56-97df-411f-8667-a4f9b73b72f0",
+      "name": "Get a file2",
+      "webhookId": "135e0794-dd04-4093-8066-3652df55e8b7",
+      "executeOnce": true,
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -288,
+        352
+      ],
+      "id": "fa11196c-7ee1-4865-8c26-67253ac71b06",
+      "name": "Extract from Upload File1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "07aef490-bb1d-47d1-9811-fdb8730089ac",
+              "name": "={{ $json.id }}",
+              "value": "={{ $json.url || \"\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -368,
+        656
+      ],
+      "id": "8692a468-cb5e-4014-a3cb-9701baae07f5",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        528
+      ],
+      "id": "72084eae-3cd5-4845-b597-c9ceaf7144df",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ae703e9b-aef7-4f91-8f62-3653e82f9a83",
+              "leftValue": "={{ $json.isAdult.toString() }}",
+              "rightValue": "=true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -1008,
+        560
+      ],
+      "id": "1c22aea7-797e-4620-bd93-e182d8344f9b",
+      "name": "Filter1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        320,
+        592
+      ],
+      "id": "73c118cf-7b74-415d-8264-1021a11c8ff0",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "=\n {{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        352
+      ],
+      "id": "8a69bb5c-bce5-42c5-92a8-b32fb5a04661",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ Object.assign({}, ...$json.data) }}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -48,
+        576
+      ],
+      "id": "d06fac7d-ecb5-490c-bbdb-557fb140b60b",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=netlify/functions/secrets.json",
+        "commitMessage": "secretsdelete"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        704,
+        576
+      ],
+      "id": "0bad1289-8c83-488f-a47c-ab7f62563c38",
+      "name": "Delete a file3",
+      "webhookId": "70d1dbb0-48da-4130-a011-5fba6f88ddf4",
+      "executeOnce": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=netlify/functions/secrets.json",
+        "binaryData": true,
+        "commitMessage": "secretscreate"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        512
+      ],
+      "id": "9657a712-9107-4bec-b12d-d780a160b482",
+      "name": "Create a file3",
+      "webhookId": "1628f0ce-293e-457f-b454-7de55905d18b",
+      "executeOnce": true,
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        512,
+        608
+      ],
+      "id": "dd99321e-e5c0-42ac-b1c4-b58f8f8bb701",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $('Aggregate2').item.json.data[0] }}",
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        912,
+        560
+      ],
+      "id": "8892ae32-d384-431d-9d57-3fa5a2a748c6",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        528
+      ],
+      "id": "033eb82b-f04b-4214-b27c-34df66339007",
+      "name": "Convert to File2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bc715017-3937-4092-9fc8-bc6d7cd9cdd3",
+              "name": "url",
+              "value": "={{ $json.isAdult == true ? \"\" : $json.url || \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "c6110902-f11f-46fb-8e88-680f32c777f8",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "862553ea-fd78-438f-95bc-61323ea82052",
+              "name": "tracking",
+              "value": "={{ $json.tracking }}",
+              "type": "boolean"
+            },
+            {
+              "id": "e60b6051-24b6-49e1-ba8f-4dafca77e3b6",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "a4807471-03ac-4fed-8b92-1f048e047d98",
+              "name": "isAdult",
+              "value": "={{ $json.isAdult }}",
+              "type": "boolean"
+            },
+            {
+              "id": "9b869b74-e5b2-4be2-8789-2bda1f2ff9b0",
+              "name": "icon",
+              "value": "={{ $json.icon }}",
+              "type": "string"
+            },
+            {
+              "id": "2b4db72b-e58f-4f83-95a4-117b163de97f",
+              "name": "geo",
+              "value": "={{ $json.geo || {} }}",
+              "type": "object"
+            },
+            {
+              "id": "596126db-384d-40d0-a8a1-cae2e31204b2",
+              "name": "backgroundImage",
+              "value": "={{ $json.backgroundImage }}",
+              "type": "string"
+            },
+            {
+              "id": "bf74bb55-2624-4a77-9a61-34e32a3632c0",
+              "name": "default_tracknumber",
+              "value": "={{ $('Filter').item.json.default_tracknumber }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -848,
+        -32
+      ],
+      "id": "7546b6ed-d66b-4b78-ab65-410a7eb06a4b",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1648,
+        544
+      ],
+      "id": "84162f71-1961-4568-a40c-df1fe2e4b7a8",
+      "name": "Aggregate3"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        384
+      ],
+      "id": "5cfdd70f-b68a-4e52-8011-dad19219ee15",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "done",
+        "completionMessage": "=https://ofl.ink/{{ $('On form submission').item.json.ID }}\n\nhere you can download json for future \n\n{{ $json.content.download_url }}\n\nYour site is \n\nhttps://linkmeclone3.netlify.app/{{ $('On form submission').item.json.ID }}\n\n\nWait 2 minutes for netlify to load the GIT",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        2048,
+        192
+      ],
+      "id": "54c93eea-1d33-4c37-b144-09ac6ede71c5",
+      "name": "Form6",
+      "webhookId": "038d2c4c-52b7-4050-853f-f5b5968e8188"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1040,
+        128
+      ],
+      "id": "1382c8f0-1590-4a58-8565-6b003ae0c923",
+      "name": "Wait",
+      "webhookId": "124fa52e-bd51-4938-8e25-be168536ac6d",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8ac60d1d-c020-46db-be46-b9f14b3bb428",
+              "name": "id",
+              "value": "={{ ($('Loop Over Items').item.json.links?.id == 0 || !$('Loop Over Items').item.json.links?.id) \n   ? Math.floor(Math.random() * 1000) + 1 \n   : $('Loop Over Items').item.json.links.id \n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1040,
+        896
+      ],
+      "id": "21cf7235-830d-4fcf-b9c5-d066670251eb",
+      "name": "idset"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "BlackPhoenixSlo",
+          "mode": "list",
+          "cachedResultName": "BlackPhoenixSlo",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "linkme_clone3",
+          "mode": "list",
+          "cachedResultName": "linkme_clone3",
+          "cachedResultUrl": "https://github.com/BlackPhoenixSlo/linkme_clone3"
+        },
+        "filePath": "=netlify/functions/secrets.json",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -2272,
+        1120
+      ],
+      "id": "42c32ac3-00e0-4404-8b3f-b94e95c17209",
+      "name": "Get a file3",
+      "webhookId": "135e0794-dd04-4093-8066-3652df55e8b7",
+      "executeOnce": true,
+      "credentials": {
+        "githubApi": {
+          "id": "2WIN4rr7ds0eyRwi",
+          "name": "GitHub account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -2064,
+        1104
+      ],
+      "id": "8c55b65d-44a3-449f-b62b-ed705eec8092",
+      "name": "Extract from Upload File2",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1760,
+        192
+      ],
+      "id": "db9e8de8-1b66-418b-84aa-e762bb1f3424",
+      "name": "Merge1",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from Upload File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Extract from GitFile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from GitFile": {
+      "main": [
+        [
+          {
+            "node": "Json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from Upload File": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Json": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Create a file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Form1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Form2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Delete a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form2": {
+      "main": [
+        [
+          {
+            "node": "idset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a file1": {
+      "main": [
+        [
+          {
+            "node": "Get a file3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete a file": {
+      "main": [
+        [
+          {
+            "node": "Form1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form3": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Create a file2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Form3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete a file1": {
+      "main": [
+        [
+          {
+            "node": "Form3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Delete a file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a file2": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Form4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "LoopOutput1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form4": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Set up def GEO id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "LoopOutput1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form5": {
+      "main": [
+        [
+          {
+            "node": "LoopOutput1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set up def GEO id": {
+      "main": [
+        [
+          {
+            "node": "Form5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LoopOutput1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Delete a file2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a file": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete a file2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get a file2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file2": {
+      "main": [
+        [
+          {
+            "node": "Extract from Upload File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from Upload File1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete a file3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Delete a file3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Convert to File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File2": {
+      "main": [
+        [
+          {
+            "node": "Create a file3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "idset": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a file3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get a file3": {
+      "main": [
+        [
+          {
+            "node": "Extract from Upload File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from Upload File2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form6": {
+      "main": [
+        []
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Form6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "0fbd09bc-3a44-4d56-b901-fc2bf8954f46",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d208607251de32845688bb3dc09f9cba5afe8cda584ca02d419faa83a6e8fd9b"
+  },
+  "id": "cMinnmplSJQ50V9p",
+  "tags": []
+}
