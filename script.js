@@ -91,9 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     let trackingIdToUse = localStorage.getItem('linkme_tracking_id');
 
                     if (!trackingIdToUse) {
-                        // Priority 2: Modified - Only use Profile Default
-                        if (currentProfile && currentProfile.default_tracknumber) {
-                            trackingIdToUse = currentProfile.default_tracknumber;
+                        // Priority 2: Modified - Only use Link Default
+                        if (link.default_tracknumber) {
+                            trackingIdToUse = link.default_tracknumber;
                         }
                     }
 
@@ -236,9 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
             let trackingIdToUse = localStorage.getItem('linkme_tracking_id');
 
             if (!trackingIdToUse) {
-                // Priority 2: Modified - Only use Profile Default
-                if (currentProfile && currentProfile.default_tracknumber) {
-                    trackingIdToUse = currentProfile.default_tracknumber;
+                // Priority 2: Modified - Only use Link Default
+                if (link.default_tracknumber) {
+                    trackingIdToUse = link.default_tracknumber;
                 }
             }
 
